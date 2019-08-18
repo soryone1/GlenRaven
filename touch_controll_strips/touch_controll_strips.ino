@@ -24,13 +24,13 @@ int lastPressedTime = 0;
 bool turnState = false;                // a flag to indicate the time to invert state
 int sensorValue;
 const int debounceDelay = 300;         // the time to get a solid finger touch, low the number if want to react faster
-
+int threshold = 100；                  // this is the threshold for capacity touch sense, adjust the number to make it stable
 // variables for strips
 
 unsigned long previousMillis = 0;
 unsigned long shiftInterval = 10000;     // the time to shift to the next strip
 unsigned long fadeInterval = 3000;       // the time before turn off the last strip, create a over laid fading effect
-bool startToFade = false;                // a flag to indicate the time to start caculate the fadeInterval
+bool startToFade = false;                // a flag to indicate the time to start caculate the fadeInterval.
 unsigned long fadeMilis = 0;
 
 const byte stripPins[] = {8, 6, 5, 4};      // change the strips pins here, better an order, from top to bottom
@@ -117,7 +117,7 @@ void loop() {
 
       Serial.println((int) smoothed);                                   // print the smoothed the result
 
-      if ((int) smoothed > 100) {
+      if ((int) smoothed > threshold) {
         pressed = HIGH;
       } else {
         pressed = LOW;
