@@ -24,7 +24,7 @@ int lastPressedTime = 0;
 bool turnState = false;                // a flag to indicate the time to invert state
 int sensorValue;
 const int debounceDelay = 300;         // the time to get a solid finger touch, low the number if want to react faster
-int threshold = 100；                  // this is the threshold for capacity touch sense, adjust the number to make it stable
+int threshold = 100;                // this is the threshold for capacity touch sense, adjust the number to make it stable
 // variables for strips
 
 unsigned long previousMillis = 0;
