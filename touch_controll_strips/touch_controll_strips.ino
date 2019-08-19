@@ -102,6 +102,34 @@ void stripsShift(unsigned long thisTime) {               // an argurement to get
   }
 }
 
+/***********************  a function to smooth the data  ***********************************************/
+
+int smooth(int data, float filterVal, float smoothedVal) {                    // simple lowpass filter                                                                              // requires recycling the output in the "smoothedVal" param
+
+  if (filterVal > 1) {                                                        // check to make sure param's are within range
+    filterVal = .999999;
+  }
+  else if (filterVal <= 0) {
+    filterVal = 0;
+  }
+
+  smoothedVal = (data * (1 - filterVal)) + (smoothedVal  *  filterVal);
+
+  return (int)smoothedVal;
+}
+
+/***********************  a function to control the strip  ***********************************************/
+
+void stripControl() {
+  if (turnState) {                                     // if ready to invert the state
+    unsigned long timeNow = millis();                  // grab the current time
+    stripsShift(timeNow);                              // put it into the function
+  } else {
+    allStripsOff();                                    // turn off all the strips
+  }
+
+}
+
 /***********************  the main loop is here  ***********************************************/
 
 void loop() {
@@ -144,26 +172,6 @@ void loop() {
     }
   }
 
-  if (turnState) {                                     // if ready to invert the state
-    unsigned long timeNow = millis();                  // grab the current time
-    stripsShift(timeNow);                              // put it into the function
-  } else {
-    allStripsOff();                                    // turn off all the strips
-  }
+  stripControl();
 
-}
-
-
-int smooth(int data, float filterVal, float smoothedVal) {                    // simple lowpass filter                                                                              // requires recycling the output in the "smoothedVal" param
-
-  if (filterVal > 1) {                                                        // check to make sure param's are within range
-    filterVal = .999999;
-  }
-  else if (filterVal <= 0) {
-    filterVal = 0;
-  }
-
-  smoothedVal = (data * (1 - filterVal)) + (smoothedVal  *  filterVal);
-
-  return (int)smoothedVal;
 }
