@@ -96,7 +96,7 @@ void stripsShift(unsigned long thisTime) {               // an argurement to get
       digitalWrite(stripPins[index - 1], LOW);
 
     } else {                                               // start to fade the last strip
-      Serial.println("start to fade 3");
+      Serial.println("start to fade 3");                    
       digitalWrite(stripPins[numbersOfStrips - 1], LOW);
     }
   }
@@ -115,12 +115,13 @@ int smooth(int data, float filterVal, float smoothedVal) {                    //
 
   smoothedVal = (data * (1 - filterVal)) + (smoothedVal  *  filterVal);
 
-  return (int)smoothedVal;
+  return (int)smoothedVal;                                                     // return the value
 }
 
 /***********************  a function to control the strip  ***********************************************/
 
-void stripControl() {
+void stripsControl() {
+  
   if (turnState) {                                     // if ready to invert the state
     unsigned long timeNow = millis();                  // grab the current time
     stripsShift(timeNow);                              // put it into the function
@@ -145,7 +146,7 @@ void loop() {
 
       Serial.println((int) smoothed);                                   // print the smoothed the result
 
-      if ((int) smoothed > threshold) {
+      if ((int) smoothed > threshold) {                                 // get 2 value state here, pressed or not
         pressed = HIGH;
       } else {
         pressed = LOW;
@@ -157,10 +158,10 @@ void loop() {
         lastPressedTime = millis();                                      // grab the time
       }
 
-      if (millis() - lastPressedTime > debounceDelay ) {                  // wait a certain time
+      if (millis() - lastPressedTime > debounceDelay ) {                  // wait a certain time for a certain touch
         if (sensorValue != buttonState) {
           buttonState = sensorValue;
-          if (buttonState == HIGH) {
+          if (buttonState == HIGH) {                                      // only active when touched, remove the finger causes nothing
             //    Serial.println("touched");
             turnState = ! turnState;                                      // here to invert the strips' state
           }
@@ -168,10 +169,10 @@ void loop() {
 
       }
 
-      lastButtonState = sensorValue;
+      lastButtonState = sensorValue;                                      // always set update the lastButtonState
     }
   }
 
-  stripControl();
+  stripsControl();                                                         // control the strips here
 
 }
