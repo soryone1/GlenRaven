@@ -12,7 +12,7 @@
 #include <CapPin.h>
 #define LED 12                // for test only
 
-CapPin cPin_5 = CapPin(A1);   // this pin is connected to touch sense pin
+CapPin cPin_5 = CapPin(A4);   // this pin is connected to touch sense pin
 
 // variables for touch sense
 
@@ -28,12 +28,12 @@ int threshold = 100;                // this is the threshold for capacity touch 
 // variables for strips
 
 unsigned long previousMillis = 0;
-unsigned long shiftInterval = 10000;     // the time to shift to the next strip
-unsigned long fadeInterval = 3000;       // the time before turn off the last strip, create a over laid fading effect
+unsigned long shiftInterval = 15000;     // the time to shift to the next strip
+unsigned long fadeInterval = 2000;       // the time before turn off the last strip, create a over laid fading effect
 bool startToFade = false;                // a flag to indicate the time to start caculate the fadeInterval.
 unsigned long fadeMilis = 0;
 
-const byte stripPins[] = {8, 6, 5, 4};      // change the strips pins here, better an order, from top to bottom
+const byte stripPins[] = {3, 4, 5, 6, 9, 11, 13, A2}; // change the strips pins here, better an order, from top to bottom
 const byte numbersOfStrips = sizeof(stripPins) / sizeof(stripPins[0]);   // get the number of the strips
 
 byte index = 0;                             // the index of the strips: starts from 0 to numberOfStrips - 1
@@ -96,7 +96,7 @@ void stripsShift(unsigned long thisTime) {               // an argurement to get
       digitalWrite(stripPins[index - 1], LOW);
 
     } else {                                               // start to fade the last strip
-      Serial.println("start to fade 3");                    
+      Serial.println("start to fade 8");
       digitalWrite(stripPins[numbersOfStrips - 1], LOW);
     }
   }
@@ -121,7 +121,7 @@ int smooth(int data, float filterVal, float smoothedVal) {                    //
 /***********************  a function to control the strip  ***********************************************/
 
 void stripsControl() {
-  
+
   if (turnState) {                                     // if ready to invert the state
     unsigned long timeNow = millis();                  // grab the current time
     stripsShift(timeNow);                              // put it into the function
