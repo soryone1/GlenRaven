@@ -6,7 +6,7 @@
 
   Create by Jasper Wang at Glen Raven
 
-  08/16/2019
+  08/25/2019
 */
 
 #include <CapPin.h>
@@ -24,7 +24,9 @@ int lastPressedTime = 0;
 bool turnState = false;                // a flag to indicate the time to invert state
 int sensorValue;
 const int debounceDelay = 300;         // the time to get a solid finger touch, low the number if want to react faster
-int threshold = 100;                // this is the threshold for capacity touch sense, adjust the number to make it stable
+int threshold = 100;                   // this is the threshold for capacity touch sense, adjust the number to make it stable
+unsigned long indicatorTime = 0;       // this is a time to track the touch sense light
+
 // variables for strips
 
 unsigned long previousMillis = 0;
@@ -33,7 +35,7 @@ unsigned long fadeInterval = 2000;       // the time before turn off the last st
 bool startToFade = false;                // a flag to indicate the time to start caculate the fadeInterval.
 unsigned long fadeMilis = 0;
 
-const byte stripPins[] = {3, 4, 5, 6, 9, 11, 13, A2}; // change the strips pins here, better an order, from top to bottom
+const byte stripPins[] = {3, 4, 5, 6, 9, 11, 12, A2};   // change the strips pins here, better an order, from top to bottom
 const byte numbersOfStrips = sizeof(stripPins) / sizeof(stripPins[0]);   // get the number of the strips
 
 byte index = 0;                             // the index of the strips: starts from 0 to numberOfStrips - 1
@@ -68,8 +70,8 @@ void stripsShift(unsigned long thisTime) {               // an argurement to get
 
   digitalWrite(stripPins[index], HIGH);                  // set the first strip on -- index[0]
 
-  Serial.print(index);                                   // print which one is on
-  Serial.println(" is on");
+  //  Serial.print(index);                                   // print which one is on
+  //  Serial.println(" is on");
 
   unsigned long currentMillis = thisTime;
   if (currentMillis - previousMillis > shiftInterval)
@@ -91,12 +93,12 @@ void stripsShift(unsigned long thisTime) {               // an argurement to get
   if (millis() - fadeMilis > fadeInterval) {              // if after the fadeInterval, start to fade
 
     if (index > 0 ) {                                     // fade from index[0] (No.1 strip) to the last 2 strip
-      Serial.print("start to fade ");
-      Serial.println(index - 1);
+      //      Serial.print("start to fade ");
+      //      Serial.println(index - 1);
       digitalWrite(stripPins[index - 1], LOW);
 
     } else {                                               // start to fade the last strip
-      Serial.println("start to fade 8");
+      //      Serial.println("start to fade 7");
       digitalWrite(stripPins[numbersOfStrips - 1], LOW);
     }
   }
@@ -146,10 +148,16 @@ void loop() {
 
       Serial.println((int) smoothed);                                   // print the smoothed the result
 
-      if ((int) smoothed > threshold) {                                 // get 2 value state here, pressed or not
+      if ((int) smoothed > threshold) {                                 // get 2 value states here, pressed or not
         pressed = HIGH;
+        digitalWrite(13, HIGH);                                         // turn on the light on Pin 13 to indicate a solid press
+        indicatorTime = millis();
       } else {
         pressed = LOW;
+      }
+
+      if (millis() - indicatorTime > 2000) {
+        digitalWrite(13, LOW);                                           // turn it off after 2 seconds
       }
 
       sensorValue = pressed;                                             // get the result of the input 0/1
@@ -162,8 +170,9 @@ void loop() {
         if (sensorValue != buttonState) {
           buttonState = sensorValue;
           if (buttonState == HIGH) {                                      // only active when touched, remove the finger causes nothing
-            //    Serial.println("touched");
-            turnState = ! turnState;                                      // here to invert the strips' state
+            // Serial.println("touched");
+            turnState = ! turnState;
+            // here to invert the strips' state
           }
         }
 
