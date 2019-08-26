@@ -5,6 +5,7 @@
   The boards I used is an Adafruit Pro Trinket 5v, Power boost buck.
 
   Create by Jasper Wang at Glen Raven
+  All the Serial.print are just for debug only, comment them when tested fine
 
   08/25/2019
 */
@@ -23,7 +24,7 @@ int lastButtonState = LOW;
 int lastPressedTime = 0;
 bool turnState = false;                // a flag to indicate the time to invert state
 int sensorValue;
-const int debounceDelay = 300;         // the time to get a solid finger touch, low the number if want to react faster
+const int debounceDelay = 300;         // the time to get a solid finger touch, low the number if you want it to react faster
 int threshold = 40;                   // this is the threshold for capacity touch sense, adjust the number to make it stable
 unsigned long indicatorTime = 0;       // this is a time to track the touch sense light
 
