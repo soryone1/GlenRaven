@@ -1,31 +1,39 @@
 /*
-  This code shows the way using touch sense fabric to controll the color change fabric,
+
+  This code shows the way to use touch sense fabric to controll the color change fabric,
   and they are one piece together.
 
-  The boards I used is an Adafruit Pro Trinket 5v, Power boost buck.
+  Tools:
+
+  Adafruit Pro Trinket 5v 16Hz, Verter Buck Boost, Powerboost Charger.
+  Lithium Ion Polymer Battery 2000mA 3.7v, Female DC Power Adapter, 5v 2000mA Switching Power Supply.
+  NPN Bipolar Transistor, 100ohm resistors, SPDT Slide Switch, Male headers.
+  FTDI Serial TTL-232 USB Cable
 
   Create by Jasper Wang at Glen Raven
-  All the Serial.print are just for debug only, comment them when tested fine
 
-  08/25/2019
+  All the Serial.print are just for debug only, comment them when tested fine.
+  The touch sense reacts good if it is grounded, touch the DC Power Adapter, when you are touching it.
+
+  08/26/2019
+
 */
 
 #include <CapPin.h>
-#define LED 12                // for test only
 
-CapPin cPin_5 = CapPin(A4);   // this pin is connected to touch sense pin
+CapPin cPin_5 = CapPin(A4);        // this pin is connected to touch sense pin
 
 // variables for touch sense
 
-float smoothed;                         // smooth the cap reading figure
+float smoothed;                        // smooth the cap reading figure
 int pressed;
 int buttonState = LOW;
 int lastButtonState = LOW;
 int lastPressedTime = 0;
 bool turnState = false;                // a flag to indicate the time to invert state
 int sensorValue;
-const int debounceDelay = 300;         // the time to get a solid finger touch, low the number if you want it to react faster
-int threshold = 40;                   // this is the threshold for capacity touch sense, adjust the number to make it stable
+const int debounceDelay = 200;         // the time to get a solid finger touch, low the number if you want it to react faster
+int threshold = 50;                    // this is the threshold for capacity touch sense, adjust the number to make it stable
 unsigned long indicatorTime = 0;       // this is a time to track the touch sense light
 
 // variables for strips
@@ -157,8 +165,8 @@ void loop() {
         pressed = LOW;
       }
 
-      if (millis() - indicatorTime > 2000) {
-        digitalWrite(13, LOW);                                           // turn it off after 2 seconds
+      if (millis() - indicatorTime > 1000) {
+        digitalWrite(13, LOW);                                           // turn it off after 1 seconds
       }
 
       sensorValue = pressed;                                             // get the result of the input 0/1
