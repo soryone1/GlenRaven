@@ -7,12 +7,12 @@
 
   Adafruit Pro Trinket 5v 16Hz, Verter Buck Boost, Powerboost Charger.
   Lithium Ion Polymer Battery 2000mA 3.7v, Female DC Power Adapter, 5v 2000mA Switching Power Supply.
-  NPN Bipolar Transistor, 100ohm resistors, SPDT Slide Switch, Male headers.
+  NPN Bipolar Transistor, Buzzer, 100ohm resistors, SPDT Slide Switch, Male headers.
   FTDI Serial TTL-232 USB Cable
 
   Create by Jasper Wang at Glen Raven
 
-  All the Serial.print are just for debug only, comment them when tested fine.
+  All the Serial.print are just for debug only, comment them if tested fine.
   The touch sense reacts good if it is grounded, touch the DC Power Adapter, when you are touching it.
 
   08/26/2019
@@ -20,6 +20,7 @@
 */
 
 #include <CapPin.h>
+#define BuzzerPin 8
 
 CapPin cPin_5 = CapPin(A4);        // this pin is connected to touch sense pin
 
@@ -55,7 +56,6 @@ void setup() {
   Serial.begin(115200);
   Serial.println("start");               // a sign to indicate the program has started
 
-  pinMode(LED, OUTPUT);                  // LED for test only
 
   for (byte i = 0; i < numbersOfStrips; i++)    // setup pinModes for strips
   {
@@ -129,9 +129,9 @@ int smooth(int data, float filterVal, float smoothedVal) {                    //
   return (int)smoothedVal;                                                     // return the value
 }
 
-/***********************  a function to control the strip  ***********************************************/
+/***********************  a function to control the strips off ***********************************************/
 
-void stripsControl() {
+void stripsControlOff() {
 
   if (turnState) {                                     // if ready to invert the state
     unsigned long timeNow = millis();                  // grab the current time
@@ -160,13 +160,15 @@ void loop() {
       if ((int) smoothed > threshold) {                                 // get 2 value states here, pressed or not
         pressed = HIGH;
         digitalWrite(13, HIGH);                                         // turn on the light on Pin 13 to indicate a solid press
+        tone(BuzzerPin, 2000);                                          // turn on the BuzzerPin on Pin 8 to provide a sound signal
         indicatorTime = millis();
       } else {
         pressed = LOW;
       }
 
-      if (millis() - indicatorTime > 1000) {
-        digitalWrite(13, LOW);                                           // turn it off after 1 seconds
+      if (millis() - indicatorTime > 500) {
+        digitalWrite(13, LOW);                                           // turn it off after 1/2 seconds
+        noTone(BuzzerPin);                                               // turn the BuzzerOff 1/2 seconds
       }
 
       sensorValue = pressed;                                             // get the result of the input 0/1
@@ -191,6 +193,6 @@ void loop() {
     }
   }
 
-  stripsControl();                                                         // control the strips here
+  stripsControlOff();                                                         // control the strips here
 
 }
