@@ -15,7 +15,7 @@
   All the Serial.print are just for debug only, comment them if tested fine.
   The touch sense reacts good if it is grounded, touch the DC Power Adapter, when you are touching it.
 
-  08/26/2019
+  08/29/2019
 
 */
 
